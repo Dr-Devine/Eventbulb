@@ -1,9 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from datetime import datetime
+from .models import Event
 
-# Create your views here.
 
-def details(request):
-    return render(request, 'events/details.html')
+def details(request, id):
+    eventFromDatabase = get_object_or_404(Event, id = id)
+    return render(request, 'events/details.html', {'event': eventFromDatabase})
 
-def events(request):
-    return render(request, "events/events.html")
+def list(request):
+    today = datetime.today()
+    events = Event.objects.filter(
+        datetime__gte=today).order_by("datetime")
+    return render(request, 'events/list.html', {"events": events})
